@@ -1,59 +1,34 @@
-import { setZoom, getZoom } from './window.js';
+import { zoomIn, zoomOut, zoomReset } from './window.js';
 
-const ZOOM_STEP = 0.1;
-const ZOOM_MIN = 0.5;
-const ZOOM_MAX = 3.0;
-
-export function registerShortcuts(win) {
+export function setupShortcuts(win) {
     const wc = win.webContents;
 
     wc.on('before-input-event', (event, input) => {
-        if (!input.type === 'keyDown') return;
+        if (input.type !== 'keyDown') return;
 
         const ctrl = input.control || input.meta;
 
-        // Zoom in: Ctrl+= or Ctrl++
         if (ctrl && (input.key === '=' || input.key === '+')) {
-            setZoom(Math.min(getZoom() + ZOOM_STEP, ZOOM_MAX));
+            zoomIn();
             event.preventDefault();
-            return;
-        }
-
-        // Zoom out: Ctrl+-
-        if (ctrl && input.key === '-') {
-            setZoom(Math.max(getZoom() - ZOOM_STEP, ZOOM_MIN));
+        } else if (ctrl && input.key === '-') {
+            zoomOut();
             event.preventDefault();
-            return;
-        }
-
-        // Reset zoom: Ctrl+0
-        if (ctrl && input.key === '0') {
-            setZoom(1.0);
+        } else if (ctrl && input.key === '0') {
+            zoomReset();
             event.preventDefault();
-            return;
-        }
-
-        // New chat: Ctrl+T
-        if (ctrl && input.key === 't') {
+        } else if (ctrl && input.key === 't') {
             wc.loadURL('https://claude.ai/new');
             event.preventDefault();
-            return;
-        }
-
-        // Reload page: Ctrl+R or F5
-        if ((ctrl && input.key === 'r') || input.key === 'F5') {
-            const url = wc.getURL();
-            if (!url.startsWith('file://')) {
-                wc.reload();
-            } else {
+        } else if ((ctrl && input.key === 'r') || input.key === 'F5') {
+            // if showing offline page, go back to claude.ai instead of reloading the file
+            if (wc.getURL().startsWith('file://')) {
                 wc.loadURL('https://claude.ai');
+            } else {
+                wc.reload();
             }
             event.preventDefault();
-            return;
-        }
-
-        // Toggle fullscreen: F11
-        if (input.key === 'F11') {
+        } else if (input.key === 'F11') {
             win.setFullScreen(!win.isFullScreen());
             event.preventDefault();
         }

@@ -3,24 +3,20 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
 let tray = null;
 
 export function setupTray(win) {
     const icon = nativeImage
-        .createFromPath(path.join(__dirname, '..', 'assets', 'icon.png'))
+        .createFromPath(path.join(__dirname, '../assets/icon.png'))
         .resize({ width: 22, height: 22 });
 
     tray = new Tray(icon);
     tray.setToolTip('Claude Desktop');
 
-    const menu = Menu.buildFromTemplate([
+    tray.setContextMenu(Menu.buildFromTemplate([
         {
             label: 'Show Window',
-            click() {
-                win.show();
-                win.focus();
-            },
+            click() { win.show(); win.focus(); },
         },
         {
             label: 'New Chat',
@@ -32,14 +28,10 @@ export function setupTray(win) {
         },
         { type: 'separator' },
         {
-            label: 'Quit Claude Desktop',
-            click() {
-                app.quit();
-            },
+            label: 'Quit',
+            click() { app.quit(); },
         },
-    ]);
-
-    tray.setContextMenu(menu);
+    ]));
 
     tray.on('click', () => {
         if (win.isVisible() && !win.isMinimized()) {
@@ -49,11 +41,4 @@ export function setupTray(win) {
             win.focus();
         }
     });
-}
-
-export function destroyTray() {
-    if (tray) {
-        tray.destroy();
-        tray = null;
-    }
 }
