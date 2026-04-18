@@ -1,83 +1,43 @@
-import { app, BrowserWindow, shell, session, Notification } from 'electron';
-import path from 'path';
-import { config } from './config/index.js';
-import { fileURLToPath } from 'url';
+import { app, BrowserWindow, session, globalShortcut } from 'electron';
 import electronContextMenu from 'electron-context-menu';
+import { createWindow, getMainWindow } from './window.js';
+import { setupTray } from './tray.js';
+import { registerShortcuts } from './shortcuts.js';
 
-// Set up the context menu
-electronContextMenu({
-    showSaveImageAs: true,
-});
+electronContextMenu({ showSaveImageAs: true });
 
-const appUrl = 'https://claude.ai';
+const gotLock = app.requestSingleInstanceLock();
 
-let window = null;
-
-// Calculate __dirname for ES modules
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-// Function to create the main application window
-const createWindow = () => {
-    window = new BrowserWindow({
-        icon: path.join(__dirname, 'assets/icon.png'),
-        autoHideMenuBar: true,
-        webPreferences: {
-            nodeIntegration: false,
-            contextIsolation: true,
-            nativeWindowOpen: true,
-            preload: path.join(__dirname, 'preload.js'),
-            webSecurity: true,
-        },
-    });
-
-    // Grant notification permission automatically — claude.ai uses it for response alerts
-    session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
-        if (permission === 'notifications') {
-            callback(true);
-        } else {
-            callback(false);
-        }
-    });
-
-    // Allow permission checks so Notification.permission returns 'granted'
-    session.defaultSession.setPermissionCheckHandler((webContents, permission) => {
-        if (permission === 'notifications') {
-            return true;
-        }
-        return false;
-    });
-
-    window.loadURL(appUrl, {
-        userAgent: config.userAgent,
-    });
-
-    // Open Google Sign-In in the system browser; allow all other popups
-    window.webContents.setWindowOpenHandler((details) => {
-        if (details.url.includes('accounts.google.com')) {
-            shell.openExternal(details.url);
-            return { action: 'deny' };
-        }
-        return { action: 'allow' };
-    });
-
-    window.once('ready-to-show', () => {
-        window.maximize();
-    });
-};
-
-// Single instance lock
-const appLock = app.requestSingleInstanceLock();
-
-if (!appLock) {
+if (!gotLock) {
     app.quit();
 } else {
-    app.on('second-instance', (event, args) => {
-        if (window) {
-            window.focus();
-        }
+    app.on('second-instance', () => {
+        const win = getMainWindow();
+        if (!win) return;
+        if (win.isMinimized()) win.restore();
+        win.show();
+        win.focus();
     });
 
-    app.on('ready', createWindow);
+    app.whenReady().then(() => {
+        session.defaultSession.setPermissionRequestHandler((_wc, permission, callback) => {
+            callback(permission === 'notifications');
+        });
+
+        session.defaultSession.setPermissionCheckHandler((_wc, permission) => {
+            return permission === 'notifications';
+        });
+
+        const win = createWindow();
+        setupTray(win);
+        registerShortcuts(win);
+    });
+
+    app.on('activate', () => {
+        if (BrowserWindow.getAllWindows().length === 0) {
+            createWindow();
+        }
+    });
 
     app.on('window-all-closed', () => {
         if (process.platform !== 'darwin') {
@@ -85,9 +45,7 @@ if (!appLock) {
         }
     });
 
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) {
-            createWindow();
-        }
+    app.on('will-quit', () => {
+        globalShortcut.unregisterAll();
     });
 }
