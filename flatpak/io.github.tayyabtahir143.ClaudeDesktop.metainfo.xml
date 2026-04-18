@@ -48,13 +48,18 @@
 
   <!-- Releases — update version and date with each new release -->
   <releases>
-    <release version="1.0.0" date="2024-12-01">
+    <release version="2.0.0" date="2026-04-18">
       <description>
-        <p>Initial Flatpak release for Flathub.</p>
+        <p>Major update with native desktop integration features.</p>
         <ul>
-          <li>Full Claude AI interface in a native desktop window</li>
-          <li>Wayland and X11 support for Fedora and other Linux distributions</li>
-          <li>Google Sign-In redirected to system browser</li>
+          <li>System tray icon with Show Window, New Chat, and Quit actions</li>
+          <li>Window size, position, and maximized state saved between sessions</li>
+          <li>Zoom controls: Ctrl+= zoom in, Ctrl+- zoom out, Ctrl+0 reset; level persisted</li>
+          <li>Keyboard shortcuts: Ctrl+T new chat, Ctrl+R or F5 reload, F11 fullscreen</li>
+          <li>Offline detection with native offline page and automatic reconnect</li>
+          <li>Desktop notifications support</li>
+          <li>Wayland and X11 auto-detection</li>
+          <li>Google Sign-In opens in system browser</li>
         </ul>
       </description>
     </release>
