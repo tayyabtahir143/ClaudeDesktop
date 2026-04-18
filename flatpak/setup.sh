@@ -14,7 +14,7 @@
 set -euo pipefail
 
 APP_ID="io.github.tayyabtahir143.ClaudeDesktop"
-APP_REPO="https://github.com/tayyabtahir143/claude-desktop"
+APP_REPO="https://github.com/tayyabtahir143/ClaudeDesktop"
 MANIFEST="${APP_ID}.yml"
 WORK_DIR="$(cd "$(dirname "$0")" && pwd)"
 TMP_DIR="${WORK_DIR}/_tmp_app_source"

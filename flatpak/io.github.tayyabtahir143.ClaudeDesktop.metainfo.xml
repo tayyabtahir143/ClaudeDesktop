@@ -32,8 +32,8 @@
   <!-- Launchable (must match .desktop file name) -->
   <launchable type="desktop-id">io.github.tayyabtahir143.ClaudeDesktop.desktop</launchable>
 
-  <url type="homepage">https://github.com/tayyabtahir143/claude-desktop</url>
-  <url type="bugtracker">https://github.com/tayyabtahir143/claude-desktop/issues</url>
+  <url type="homepage">https://github.com/tayyabtahir143/ClaudeDesktop</url>
+  <url type="bugtracker">https://github.com/tayyabtahir143/ClaudeDesktop/issues</url>
 
   <developer id="io.github.tayyabtahir143">
     <name>Tayyab Tahir</name>
@@ -42,7 +42,7 @@
   <screenshots>
     <screenshot type="default">
       <caption>Claude AI chat interface in the desktop window</caption>
-      <image type="source">https://raw.githubusercontent.com/tayyabtahir143/claude-desktop/main/screenshots/app-screenshot.png</image>
+      <image type="source">https://raw.githubusercontent.com/tayyabtahir143/ClaudeDesktop/main/screenshots/app-screenshot.png</image>
     </screenshot>
   </screenshots>
 

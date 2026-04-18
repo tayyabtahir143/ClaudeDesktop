@@ -30,7 +30,7 @@ flatpak run io.github.tayyabtahir143.ClaudeDesktop
 Requirements: `flatpak-builder`, `git`, `python3-pip`, `nodejs`, `npm`
 
 ```bash
-git clone https://github.com/tayyabtahir143/claude-desktop
+git clone https://github.com/tayyabtahir143/ClaudeDesktop
 cd claude-desktop/flatpak
 
 ./setup.sh         # Install runtimes and generate npm sources (run once)
@@ -40,7 +40,7 @@ cd claude-desktop/flatpak
 ### Run with npm (development)
 
 ```bash
-git clone https://github.com/tayyabtahir143/claude-desktop
+git clone https://github.com/tayyabtahir143/ClaudeDesktop
 cd claude-desktop
 npm install
 npm start
